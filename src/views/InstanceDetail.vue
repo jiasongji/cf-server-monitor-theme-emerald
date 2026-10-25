@@ -185,6 +185,8 @@ const remainingTimeValueClass = computed(() => {
 
 /** show_price 关闭时访客不可见价格/价值，仅保留剩余时间（管理员不受影响） */
 const canViewPrice = computed(() => appStore.canViewPrice)
+/** show_expire 关闭时隐藏剩余时间（与内置主题一致，不对管理员豁免） */
+const showExpire = computed(() => appStore.showExpire)
 
 const metricCards = computed<MetricCard[]>(() => {
   if (!data.value)
@@ -219,8 +221,7 @@ const metricCards = computed<MetricCard[]>(() => {
     },
   ]
 
-  return [
-    ...(canViewPrice.value ? priceCards : []),
+  const remainingTimeCards: MetricCard[] = [
     {
       label: '剩余时间',
       value: remainingTime.value,
@@ -228,8 +229,25 @@ const metricCards = computed<MetricCard[]>(() => {
       icon: 'tabler:calendar-dollar',
       valueClass: remainingTimeValueClass.value,
     },
+  ]
+
+  return [
+    ...(canViewPrice.value ? priceCards : []),
+    ...(showExpire.value ? remainingTimeCards : []),
     ...(canViewPrice.value ? trailingCards : []),
   ]
+})
+
+/** 指标卡行的桌面端列数跟随实际可见卡数，避免关闭价格/到期开关后留下空列 */
+const metricCardsGridClass = computed(() => {
+  const count = metricCards.value.length
+  if (count >= 4)
+    return 'lg:grid-cols-4'
+  if (count === 3)
+    return 'lg:grid-cols-3'
+  if (count === 2)
+    return 'lg:grid-cols-2'
+  return ''
 })
 
 const gpuInfoList = computed(() => parseGpuInfo(data.value?.gpu_info))
@@ -318,7 +336,7 @@ const trafficProgressStyle = computed(() => ({
         </Badge>
       </div>
 
-      <div class="px-4 grid grid-cols-2 gap-4" :class="canViewPrice ? 'lg:grid-cols-4' : 'lg:grid-cols-2'">
+      <div v-if="metricCards.length > 0" class="px-4 grid grid-cols-2 gap-4" :class="metricCardsGridClass">
         <CardX
           v-for="item in metricCards" :key="item.label" hoverable size="small"
           class="group h-full border-none transition-all rounded-md"

@@ -43,6 +43,12 @@ const useAppStore = defineStore('app', () => {
    */
   const canViewPrice = computed<boolean>(() => showPrice.value || isLoggedIn.value)
 
+  /**
+   * 后端站点开关 sysConfig.show_expire：是否显示到期/剩余时间信息。
+   * 旧版后端不返回该字段时视为开启；与内置主题一致，不对管理员豁免。
+   */
+  const showExpire = ref<boolean>(true)
+
   // 首页滚动位置记忆
   const homeScrollPosition = ref<number>(0)
 
@@ -263,6 +269,14 @@ const useAppStore = defineStore('app', () => {
     showPrice.value = value ?? true
   }
 
+  /**
+   * 记录 /api/servers 的 sysConfig.show_expire。
+   * undefined（旧版后端不返回该字段）按 true 处理。
+   */
+  function updateShowExpire(value?: boolean) {
+    showExpire.value = value ?? true
+  }
+
   return {
     loading,
     themeMode,
@@ -300,12 +314,14 @@ const useAppStore = defineStore('app', () => {
     isLoggedIn,
     showPrice,
     canViewPrice,
+    showExpire,
     publicSettings,
     connectionError,
     homeScrollPosition,
     updateThemeMode,
     updateLoginState,
     updateShowPrice,
+    updateShowExpire,
   }
 })
 

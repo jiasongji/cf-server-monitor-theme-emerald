@@ -44,7 +44,7 @@ const trafficStatus = computed(() => getTrafficLevel(trafficUsedPercentage.value
 const trafficUsed = computed(() => getTrafficUsed(props.node))
 // show_price 关闭时访客不可见价格，仅保留剩余时间（管理员不受影响）
 const canViewPrice = computed(() => appStore.canViewPrice)
-const priceTags = computed(() => getPriceTags(props.node, appStore.lang, canViewPrice.value))
+const priceTags = computed(() => getPriceTags(props.node, appStore.lang, canViewPrice.value, appStore.showExpire))
 const remainingTimeTagClass = computed(() => getRemainingTimeTagClass(props.node))
 const customTags = computed(() => getCustomTags(props.node))
 
@@ -218,7 +218,7 @@ function openPingDialog() {
                 {{ props.node.uptime > 0 ? formatUptime(props.node.uptime) : '' }}
               </span>
             </div>
-            <div class="flex items-center justify-between">
+            <div v-if="priceTags.length > 0" class="flex items-center justify-between">
               <span class="truncate">
                 费用
               </span>

@@ -103,18 +103,21 @@ export function formatOfflineTime(node: NodeData): string {
  * @param node 节点数据
  * @param lang 语言
  * @param showPrice 后端 sysConfig.show_price（false 且非管理员时隐藏价格，保留剩余时间）
+ * @param showExpire 后端 sysConfig.show_expire（false 时隐藏剩余时间/长期标签）
  */
-export function getPriceTags(node: NodeData, lang: 'zh-CN' | 'en-US', showPrice = true): PriceTagItem[] {
+export function getPriceTags(node: NodeData, lang: 'zh-CN' | 'en-US', showPrice = true, showExpire = true): PriceTagItem[] {
   const tags: PriceTagItem[] = []
   const status = getExpireStatus(node.expired_at)
   const remainingDays = formatRemainingDays(node.expired_at)
   const priceText = formatPriceWithCycle(node.price, node.billing_cycle, node.currency, lang)
   if (showPrice && hasConfiguredPrice(node))
     tags.push({ text: priceText })
-  if (status === 'long_term')
-    tags.push({ text: lang === 'zh-CN' ? '长期' : 'Long-term' })
-  else
-    tags.push({ text: remainingDays, highlightValue: remainingDays })
+  if (showExpire) {
+    if (status === 'long_term')
+      tags.push({ text: lang === 'zh-CN' ? '长期' : 'Long-term' })
+    else
+      tags.push({ text: remainingDays, highlightValue: remainingDays })
+  }
   return tags
 }
 

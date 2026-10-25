@@ -126,6 +126,8 @@ class InitManager {
       this.nodesStore.configurePingHistory({ showThreeNetDetails })
       // 后端开关控制：show_price 关闭时访客不可见价格/价值信息（管理员不受影响）
       this.appStore.updateShowPrice(sysConfig?.show_price)
+      // 后端开关控制：show_expire 关闭时隐藏卡片/列表/详情页的到期与剩余时间信息
+      this.appStore.updateShowExpire(sysConfig?.show_expire)
       this.nodesStore.initNodes(clients, statuses)
 
       for (const { apiIndex, updates } of latestReportUpdates) {
