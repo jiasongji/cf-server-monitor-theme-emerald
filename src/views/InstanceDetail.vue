@@ -414,6 +414,7 @@ const trafficProgressStyle = computed(() => ({
         </CardX>
 
         <CardX
+          v-if="appStore.isLoggedIn"
           title="存储信息" size="small"
           class="group h-full border-none transition-all rounded-md"
           :class="pickSurfaceClass('bg-background/60 hover:bg-background', 'bg-background/50 hover:bg-background backdrop-blur-xs')"
@@ -433,6 +434,7 @@ const trafficProgressStyle = computed(() => ({
         </CardX>
 
         <CardX
+          v-if="appStore.isLoggedIn"
           title="网络信息" size="small"
           class="group h-full border-none transition-all rounded-md"
           :class="pickSurfaceClass('bg-background/60 hover:bg-background', 'bg-background/50 hover:bg-background backdrop-blur-xs')"
